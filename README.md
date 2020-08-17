@@ -4,10 +4,10 @@
 
 ## License
 
-Sound of the mosquito
+Code - (MIT)
 
-[tholman/mosquito-js](https://github.com/tholman/mosquito-js): An annoying mosquito created with the web audio api. [MIT License](https://opensource.org/licenses/mit-license.php)
+Code (mosquito.js) - [tholman/mosquito-js](https://github.com/tholman/mosquito-js): An annoying mosquito created with the web audio api. (MIT)
 
-Image of the mosquito
+`clap.mp3` [freesoundslibrary.com](https://www.freesoundslibrary.com/single-clap-sound-effect/) (CC BY 4.0) 
 
-[Mosquito Emoji](https://github.com/googlefonts/noto-emoji/blob/5628587386c78161f87aa2ca9ddee37c2e8ea212/svg/emoji_u1f99f.svg) from [googlefonts/noto-emoji](https://github.com/googlefonts/noto-emoji). [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+`emoji_u1f99f.svg` [googlefonts/noto-emoji](https://github.com/googlefonts/noto-emoji/blob/5628587386c78161f87aa2ca9ddee37c2e8ea212/svg/emoji_u1f99f.svg) ([Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0))
