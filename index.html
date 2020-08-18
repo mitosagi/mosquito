@@ -1,6 +1,7 @@
-<div id="mosquito" class="center">
+<div id="mosquito" class="mosquito">
     <img src="./lib/emoji_u1f99f.svg">
 </div>
+<div id="room"></div>
 <header class="center">
     <div>
         <h1>Mosquito.js</h1>
@@ -21,7 +22,7 @@
         flex-direction: column;
     }
 
-    #mosquito {
+    .mosquito {
         position: fixed;
         width: 30px;
         padding: 10px 0px;
@@ -51,7 +52,7 @@
     }
 </style>
 <script type="module">
-    const debug = false
+    const debug = true
 
     import { m_start, m_stop, clap } from './lib/mosquito.js';
 
@@ -63,69 +64,89 @@
         return Math.exp(u + d * Math.sqrt(-2.0 * Math.log(z1)) * Math.cos(2.0 * Math.PI * z2))
     }
 
-    // mosquit
-    const mosquito = document.getElementById("mosquito")
-    if (Math.random() > 0.85) mosquito.style.filter = "invert(50%) sepia(100%)" // house mosquito
-    let speed = 0.0001 * lnd(1.05, 0.2) // ~0.0003
+    const sound = {
+        reflesh: () => {
+            if (document.getElementById("room").childElementCount
+                > document.getElementsByClassName("died").length) {
+                m_start()
+            } else {
+                m_stop()
+            }
+        },
+        clap: clap
+    }
 
-    const flying = (() => {
-        let time = performance.now()
-        let theta = Math.random() * 1000
+    function addMosquito() {
+        // mosquit
+        const mosquito = document.getElementById("mosquito").cloneNode(true)
+        document.getElementById("room").appendChild(mosquito)
+        if (Math.random() > 0.85) mosquito.style.filter = "invert(50%) sepia(100%)" // house mosquito
+        let speed = 0.0001 * lnd(1.05, 0.2) // ~0.0003
 
-        let scr_x = 0, scr_y = 0
+        const flying = (() => {
+            let time = performance.now()
+            let theta = Math.random() * 1000
 
-        return () => {
-            const time2 = time
-            time = performance.now()
-            theta += (time - time2) * Math.PI * speed
-            const math_x = Math.cos(theta)
-            const math_y = Math.cos(Math.sqrt(2) * theta)
+            let scr_x = 0, scr_y = 0
 
-            const scr_x2 = scr_x
-            const scr_y2 = scr_y
-            scr_x = window.innerWidth / 2 * 1.2 * math_x + window.innerWidth / 2 - mosquito.offsetWidth / 2
-            scr_y = window.innerHeight / 2 * 1.2 * math_y + window.innerHeight / 2 - mosquito.offsetHeight / 2
-            const r = Math.atan2(scr_y - scr_y2, scr_x - scr_x2) / (2 * Math.PI) * 360 + 90
+            return () => {
+                const time2 = time
+                time = performance.now()
+                theta += (time - time2) * Math.PI * speed
+                const math_x = Math.cos(theta)
+                const math_y = Math.cos(Math.sqrt(2) * theta)
 
-            mosquito.style.transform = `translateX(${scr_x}px) translateY(${scr_y}px) rotate(${r}deg)`
-        }
-    })()
+                const scr_x2 = scr_x
+                const scr_y2 = scr_y
+                scr_x = window.innerWidth / 2 * 1.2 * math_x + window.innerWidth / 2 - mosquito.offsetWidth / 2
+                scr_y = window.innerHeight / 2 * 1.2 * math_y + window.innerHeight / 2 - mosquito.offsetHeight / 2
+                const r = Math.atan2(scr_y - scr_y2, scr_x - scr_x2) / (2 * Math.PI) * 360 + 90
 
-    // calculate interval
-    const interval_ms = 100
-    mosquito.style.transitionDuration = `${interval_ms}ms`
+                mosquito.style.transform = `translateX(${scr_x}px) translateY(${scr_y}px) rotate(${r}deg)`
+            }
+        })()
 
-    // the first itelation
-    flying()
-    mosquito.style.display = "block"
+        // the first itelation
+        flying()
+        mosquito.style.display = "block"
 
-    // run
-    const clock = setInterval(flying, interval_ms)
+        // run
+        const interval_ms = 100
+        mosquito.style.transitionDuration = `${interval_ms}ms`
+        const clock = setInterval(flying, interval_ms)
 
-    mosquito.addEventListener('mousedown', e => { // clap
-        if (Math.random() > 0.2) {
+        function died() {
             clearInterval(clock)
-            m_stop()
+            mosquito.classList.add('died');
+            sound.reflesh()
         }
-        else speed /= 2
+
+        mosquito.addEventListener('mousedown', e => { // hit
+            if (Math.random() > 0.2) died()
+            else speed /= 2
+        })
+
+        if (debug) {
+            document.addEventListener('keydown', function (event) {
+                if (event.key == "f") died()
+            })
+        }
+    }
+
+    document.addEventListener('mousedown', e => {
+        sound.reflesh()
+        sound.clap()
     })
 
-    let firstClick = true
-    document.addEventListener('mousedown', e => { // mosquito noise
-        if (firstClick) {
-            if (debug == false) m_start()
-            firstClick = false
-        }
-        clap()
-    })
-
-    // for debug
     if (debug) {
         document.addEventListener('keydown', function (event) {
-            if (event.key == "f") {
-                clearInterval(clock)
-                m_stop()
+            if (event.key == "a") {
+                addMosquito()
+                sound.reflesh()
             }
         })
     }
+
+    addMosquito()
+
 </script>
